@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建结果</title>
+    <link rel="icon" href="{{ url_for('static', filename='mail.svg') }}" type="image/svg+xml">
+
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background: linear-gradient(135deg, #f06, #4a90e2); /* 默认背景 */
+            transition: background 0.5s ease; /* 添加过渡效果 */
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2>邮箱创建结果</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if email %}
+                            <div class="alert alert-success text-center" role="alert">
+                                <h4 class="alert-heading">邮箱创建成功！</h4>
+                                <p><strong>邮箱地址：</strong> {{ email }}</p>
+                                <p><strong>密码：</strong> {{ password }}</p>
+                            </div>
+                        {% elif error %}
+                            <div class="alert alert-danger text-center" role="alert">
+                                <h4 class="alert-heading">邮箱创建失败</h4>
+                                <p>{{ error }}</p>
+                            </div>
+                        {% endif %}
+                        <div class="text-center mt-4">
+                            <a href="/" class="btn btn-primary">返回创建页面</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 引入Bootstrap JS和依赖库 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // 生成随机亮色
+        function getRandomLightColor() {
+            const letters = '89ABCDEF'; // 限制为较高的RGB值，生成亮色
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 8)];
+            }
+            return color;
+        }
+
+        // 设置随机渐变背景
+        function setRandomGradient() {
+            const color1 = getRandomLightColor();
+            const color2 = getRandomLightColor();
+            document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+        }
+
+        // 在页面加载时设置随机渐变背景
+        window.onload = setRandomGradient;
+    </script>
+</body>
+</html>

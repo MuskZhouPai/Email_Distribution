@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建邮箱</title>
+        <link rel="icon" href="{{ url_for('static', filename='mail.svg') }}" type="image/svg+xml">
+    <!-- 引入Bootstrap CSS，用于样式和响应式设计 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+ <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            transition: background 0.5s ease;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .input-group-text {
+            background-color: #f7f7f7;
+            border-left: 0;
+            border-radius: 0 5px 5px 0;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .form-control {
+            border-right: 0;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .input-group {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .input-group-text img {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+.custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+    overflow: visible; /* 确保父容器允许溢出的下拉列表显示 */
+}
+
+
+        .custom-select {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+        .custom-select__trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .custom-option {
+            display: block;
+        }
+
+        .custom-select__trigger .arrow {
+            display: none;
+        }
+
+.custom-options {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-15px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    z-index: 2;
+
+    /* 新增 */
+    max-height: 150px; /* 根据需求设置最大高度 */
+    overflow-y: auto;  /* 启用垂直滚动条 */
+}
+
+
+        .custom-option {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-option:hover, .custom-option.selected {
+            background-color: #f0f0f0;
+        }
+
+        .hidden-select {
+            display: none;
+        }
+
+        .custom-select.open .custom-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .custom-select.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .user-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            display: none;
+        }
+
+        .user-actions button {
+            width: 48%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2>创建邮箱</h2>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- 添加提示消息显示 -->
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                          {% if messages %}
+                            <div class="alert alert-{{ messages[0][0] }}">
+                                {{ messages[0][1] }}
+                            </div>
+                          {% endif %}
+                        {% endwith %}
+
+                        <form method="POST" onsubmit="return checkLoginStatus()">
+                            <div class="form-group">
+                                <label for="username">邮箱名：</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="请输入邮箱用户名" required maxlength="20">
+                                    <div class="input-group-append">
+                                        <!-- 自定义选择框 -->
+                                        <div class="custom-select-wrapper">
+                                            <div class="custom-select">
+                                                <div class="custom-select__trigger">
+                                                    <span>@linux.irish</span>
+                                                    <div class="arrow"></div>
+                                                </div>
+                                                <div class="custom-options">
+                                                    <!-- 默认选项 -->
+                                                    <span class="custom-option selected" data-value="@linux.irish">@linux.irish</span>
+                                                    <!-- 新增选项 -->
+                                                    <span class="custom-option" data-value="@stripe.edu.pl">@stripe.edu.pl</span>
+                                                    <span class="custom-option" data-value="@prison.social">@prison.social</span>
+                                                    <span class="custom-option" data-value="@yangzhi.edu.pl">@yangzhi.edu.pl</span>
+                                                    <span class="custom-option" data-value="@checker.edu.pl">@checker.edu.pl</span>
+                                                    <span class="custom-option" data-value="@bin.edu.pl">@bin.edu.pl</span>
+                                                </div>
+                                            </div>
+                                            <!-- 隐藏的原生select元素 -->
+                                            <select name="domain" id="domain" class="hidden-select">
+                                                <option value="@linux.irish" selected>@linux.irish</option>
+                                                <option value="@stripe.edu.pl">@stripe.edu.pl</option>
+                                                <option value="@prison.social">@prison.social</option>
+                                                <option value="@yangzhi.edu.pl">@yangzhi.edu.pl</option>
+                                                <option value="@checker.edu.pl">@checker.edu.pl</option>
+                                                <option value="@bin.edu.pl">@bin.edu.pl</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">密码：</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="password" name="password" placeholder="点击右侧按钮生成密码或手动输入" required maxlength="20">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" onclick="generatePassword()">
+                                            <img src="{{ url_for('static', filename='random-forest.svg') }}" alt="Generate Password">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">创建邮箱</button>
+                        </form>
+
+                        <!-- 显示今日创建邮箱数量和提示 -->
+                        <div class="mt-3">
+                            今日已创建 {{ today_email_count }} / {{ max_daily_email_limit }} 个邮箱。
+                        </div>
+                        
+                        <!-- 用户中心和退出登录按钮 -->
+                        <div class="user-actions">
+                            <button class="btn btn-secondary" onclick="window.location.href='/user_center'">用户中心</button>
+                            <button class="btn btn-danger" onclick="window.location.href='/logout'">退出登录</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录提示模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">请先登录</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    请先登录以继续创建邮箱。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="window.location.href='/login'">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 密码生成成功提示模态框 -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">密码生成成功</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    密码已生成并复制到剪贴板！
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Bootstrap JS和依赖库 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function checkLoginStatus() {
+            const isLoggedIn = {{ 'true' if 'user' in session else 'false' }};
+            if (!isLoggedIn) {
+                $('#loginModal').modal('show');
+                return false;
+            }
+            return true;
+        }
+
+        // 生成随机密码并复制到剪贴板
+        function generatePassword() {
+            const generateSegment = () => {
+                const length = 5;
+                const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                let segment;
+                while (true) {
+                    segment = '';
+                    for (let i = 0; i < length; i++) {
+                        segment += charset.charAt(Math.floor(Math.random() * charset.length));
+                    }
+                    const hasUpperCase = /[A-Z]/.test(segment);
+                    const hasLowerCase = /[a-z]/.test(segment);
+                    const hasNumbers = /\d/.test(segment);
+
+                    if (hasUpperCase && hasLowerCase && hasNumbers) {
+                        break;
+                    }
+                }
+                return segment;
+            }
+
+            const password = `${generateSegment()}-${generateSegment()}-${generateSegment()}`;
+
+            // 将生成的密码填充到输入框中
+            const passwordInput = document.getElementById('password');
+            passwordInput.value = password;
+
+            // 复制密码到剪贴板
+            passwordInput.select();
+            document.execCommand('copy');
+
+            // 显示模态框
+            $('#passwordModal').modal('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取自定义选择框及其组件
+            const customSelect = document.querySelector('.custom-select');
+            const customSelectTrigger = customSelect.querySelector('.custom-select__trigger');
+            const customOptions = customSelect.querySelector('.custom-options');
+            const customOptionsItems = customOptions.querySelectorAll('.custom-option');
+            const hiddenSelect = document.querySelector('.hidden-select');
+
+            // 点击选择框触发器时，展开或收起选项列表
+            customSelectTrigger.addEventListener('click', function() {
+                customSelect.classList.toggle('open');
+            });
+
+// 检查用户名是否包含中文字符和符号
+        function validateUsername() {
+            const username = document.getElementById('username').value;
+            const chinesePattern = /[\u4e00-\u9fa5]/; // 检测中文字符的正则表达式
+            const validUsernamePattern = /^[a-zA-Z0-9]+$/;  // 只允许字母和数字，不允许符号
+
+            if (chinesePattern.test(username)) {
+                alert('用户名不能包含中文字符');
+                return false;
+            }
+
+            if (!validUsernamePattern.test(username)) {
+                alert('用户名只能包含字母和数字，不能包含符号');
+                return false;
+            }
+
+            return true;
+        }
+
+
+// 验证密码是否只包含大小写字母、数字和@、_符号且不包含中文字符
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const validPattern = /^[a-zA-Z0-9@_]+$/;  // 只允许字母、数字、@ 和 _ 符号
+            const chinesePattern = /[\u4e00-\u9fa5]/;  // 检测中文字符的正则表达式
+
+            if (!validPattern.test(password)) {
+                alert('密码只能包含大小写字母、数字和@、_符号');
+                return false;
+            }
+
+            if (chinesePattern.test(password)) {
+                alert('密码不能包含中文字符');
+                return false;
+            }
+
+            return true;
+        }
+
+
+            // 处理选项点击事件
+            customOptionsItems.forEach(function(option) {
+                option.addEventListener('click', function() {
+                    const selectedValue = option.getAttribute('data-value');
+                    customOptionsItems.forEach(function(item) {
+                        item.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    customSelectTrigger.querySelector('span').textContent = selectedValue;
+                    hiddenSelect.value = selectedValue;
+                    customSelect.classList.remove('open');
+                });
+            });
+
+            // 如果点击事件发生在选择框外部，则关闭选择框
+            document.addEventListener('click', function(e) {
+                if (!customSelect.contains(e.target)) {
+                    customSelect.classList.remove('open');
+                }
+            });
+
+            // 调用函数设置随机亮色背景
+            setRandomGradientBackground();
+
+            // 显示用户中心和退出登录按钮（如果用户已登录）
+            const isLoggedIn = {{ 'true' if 'user' in session else 'false' }};
+            if (isLoggedIn) {
+                document.querySelector('.user-actions').style.display = 'flex';
+            }
+        });
+
+        // 生成随机亮色渐变背景
+        function setRandomGradientBackground() {
+            const colors = [
+                '#FFD700', '#FF69B4', '#FF4500', '#00FF7F', '#00CED1', '#1E90FF', '#9370DB', '#FFB6C1', '#F0E68C'
+            ];
+
+            const color1 = colors[Math.floor(Math.random() * colors.length)];
+            const color2 = colors[Math.floor(Math.random() * colors.length)];
+
+            // 避免两个颜色相同
+            if (color1 === color2) {
+                return setRandomGradientBackground();
+            }
+
+            const gradient = `linear-gradient(135deg, ${color1}, ${color2})`;
+            document.body.style.background = gradient;
+        }
+    </script>
+</body>
+</html>

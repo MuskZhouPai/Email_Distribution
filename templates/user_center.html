@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户中心</title>
+    <link rel="icon" href="{{ url_for('static', filename='mail.svg') }}" type="image/svg+xml">
+
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background: linear-gradient(135deg, #f06, #4a90e2); /* 默认背景 */
+            transition: background 0.5s ease;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .user-info {
+            margin-bottom: 20px;
+        }
+        .email-list {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .email-list p {
+            margin: 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn-container .btn {
+            width: 48%;  /* 两个按钮平分宽度 */
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>用户中心</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="user-info">
+                            <p><strong>用户名：</strong> {{ user.username }}</p>
+                            <p><strong>信任等级：</strong> {{ user.trust_level }}</p>
+                        </div>
+                        <div class="email-list">
+                            <h4>已创建的邮箱：</h4>
+                            {% if emails %}
+                                {% for email in emails %}
+                                    <p><strong>邮箱地址：</strong> {{ email.email_address }}<br>
+                                    <strong>密码：</strong> {{ email.password }}</p>
+                                {% endfor %}
+                            {% else %}
+                                <p>您还没有创建任何邮箱。</p>
+                            {% endif %}
+                        </div>
+                        <div class="btn-container">
+                            <a href="{{ url_for('index') }}" class="btn btn-primary">返回首页</a>
+                            <a href="{{ url_for('logout') }}" class="btn btn-danger">退出登录</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 添加的文字内容 -->
+<!--                <div class="footer">
+                    <p><a href="https://beian.miit.gov.cn" target="_blank">沪ICP备2024080223号-5</a></p>
+                    <p>©️CopyRights TUF.Tech & Made By MuskZhou</p>
+                </div>
+-->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Bootstrap JS和依赖库 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // 设置随机亮色渐变背景
+        document.addEventListener("DOMContentLoaded", function() {
+            const colors = [
+                '#FFDDC1', '#FFD1BA', '#FFABAB', '#FFC3A0', '#FF677D',
+                '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7',
+                '#C7CEEA', '#F3E2D9', '#F9D5E5', '#E5D9F2', '#D0E1F9'
+            ];
+            const startColor = colors[Math.floor(Math.random() * colors.length)];
+            const endColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.style.background = `linear-gradient(135deg, ${startColor}, ${endColor})`;
+        });
+    </script>
+</body>
+</html>

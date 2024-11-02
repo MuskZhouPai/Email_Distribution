@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建邮箱</title>
+    <!-- 引入Bootstrap CSS，用于样式和响应式设计 -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            transition: background 0.5s ease; /* 添加背景过渡效果 */
+        }
+
+        /* 卡片样式，阴影和圆角 */
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* 输入组样式，调整内部输入框和按钮的布局 */
+        .input-group-text {
+            background-color: #f7f7f7;
+            border-left: 0;
+            border-radius: 0 5px 5px 0;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        /* 输入框样式，移除右侧边框以配合按钮 */
+        .form-control {
+            border-right: 0;
+            border-radius: 5px 0 0 5px;
+        }
+
+        /* 输入组的整体布局 */
+        .input-group {
+            width: 100%;
+            max-width: 500px; /* 增加输入组的最大宽度 */
+        }
+
+        /* 生成密码按钮内的图片样式 */
+        .input-group-text img {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        /* 自定义选择框外部容器样式 */
+        .custom-select-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        /* 自定义选择框样式 */
+        .custom-select {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* 自定义选择框内的触发器样式 */
+        .custom-select__trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            user-select: none;
+        }
+
+        /* 选择框中的箭头样式 */
+        .custom-select__trigger .arrow {
+            margin-left: 10px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #333;
+            transition: transform 0.3s ease;
+        }
+
+        /* 自定义选择框的选项列表样式 */
+        .custom-options {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+            z-index: 2;
+        }
+
+        /* 单个选项样式 */
+        .custom-option {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 鼠标悬停和选中的选项样式 */
+        .custom-option:hover, .custom-option.selected {
+            background-color: #f0f0f0;
+        }
+
+        /* 隐藏原始的下拉选择框 */
+        .hidden-select {
+            display: none;
+        }
+
+        /* 打开选择框时的样式 */
+        .custom-select.open .custom-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* 打开选择框时，箭头旋转 */
+        .custom-select.open .arrow {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2>创建邮箱</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="form-group">
+                                <label for="username">邮箱名：</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="请输入邮箱用户名" required maxlength="20">
+                                    <div class="input-group-append">
+                                        <!-- 自定义选择框 -->
+                                        <div class="custom-select-wrapper">
+                                            <div class="custom-select">
+                                                <div class="custom-select__trigger">
+                                                    <span>@zhiyang.cards</span>
+                                                    <div class="arrow"></div>
+                                                </div>
+                                                <div class="custom-options">
+                                                    <!-- 默认选项 -->
+                                                    <span class="custom-option selected" data-value="@zhiyang.cards">@zhiyang.cards</span>
+                                                    <!-- 新增选项 -->
+                                                    <span class="custom-option" data-value="@linuxdo.email">@linuxdo.email</span>
+                                                </div>
+                                            </div>
+                                            <!-- 隐藏的原生select元素 -->
+                                            <select name="domain" id="domain" class="hidden-select">
+                                                <option value="@zhiyang.cards" selected>@zhiyang.cards</option>
+                                                <option value="@linuxdo.email">@linuxdo.email</option>
+                                                <!-- 添加更多选项 -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">密码：</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="password" name="password" placeholder="点击右侧按钮生成密码或手动输入" required maxlength="20">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" onclick="generatePassword()">
+                                            <img src="{{ url_for('static', filename='your-icon.svg') }}" alt="Generate Password">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">创建邮箱</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 密码生成成功提示模态框 -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">密码生成成功</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    密码已生成并复制到剪贴板！
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Bootstrap JS和依赖库 -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // 生成随机密码并复制到剪贴板
+        function generatePassword() {
+            const length = 12;  // 将密码长度设为12位，以增强安全性
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=";
+            let password = "";
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+
+            // 确保密码包含大小写字母、数字和符号
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecial = /[!@#$%^&*()_+~`|}{[\]:;?><,./-=]/.test(password);
+
+            if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecial) {
+                return generatePassword();
+            }
+
+            // 将生成的密码填充到输入框中
+            const passwordInput = document.getElementById('password');
+            passwordInput.value = password;
+
+            // 复制密码到剪贴板
+            passwordInput.select();
+            document.execCommand('copy');
+
+            // 显示模态框
+            $('#passwordModal').modal('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取自定义选择框及其组件
+            const customSelect = document.querySelector('.custom-select');
+            const customSelectTrigger = customSelect.querySelector('.custom-select__trigger');
+            const customOptions = customSelect.querySelector('.custom-options');
+            const customOptionsItems = customOptions.querySelectorAll('.custom-option');
+            const hiddenSelect = document.querySelector('.hidden-select');
+
+            // 点击选择框触发器时，展开或收起选项列表
+            customSelectTrigger.addEventListener('click', function() {
+                customSelect.classList.toggle('open');
+            });
+
+            // 处理选项点击事件
+            customOptionsItems.forEach(function(option) {
+                option.addEventListener('click', function() {
+                    const selectedValue = option.getAttribute('data-value');
+                    customOptionsItems.forEach(function(item) {
+                        item.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    customSelectTrigger.querySelector('span').textContent = selectedValue;
+                    hiddenSelect.value = selectedValue;
+                    customSelect.classList.remove('open');
+                });
+            });
+
+            // 如果点击事件发生在选择框外部，则关闭选择框
+            document.addEventListener('click', function(e) {
+                if (!customSelect.contains(e.target)) {
+                    customSelect.classList.remove('open');
+                }
+            });
+
+            // 调用函数设置随机亮色背景
+            setRandomGradientBackground();
+        });
+
+        // 生成随机亮色渐变背景
+        function setRandomGradientBackground() {
+            const colors = [
+                '#FFD700', '#FF69B4', '#FF4500', '#00FF7F', '#00CED1', '#1E90FF', '#9370DB', '#FFB6C1', '#F0E68C'
+            ];
+
+            const color1 = colors[Math.floor(Math.random() * colors.length)];
+            const color2 = colors[Math.floor(Math.random() * colors.length)];
+
+            // 避免两个颜色相同
+            if (color1 === color2) {
+                return setRandomGradientBackground();
+            }
+
+            const gradient = `linear-gradient(135deg, ${color1}, ${color2})`;
+            document.body.style.background = gradient;
+        }
+    </script>
+</body>
+</html>
