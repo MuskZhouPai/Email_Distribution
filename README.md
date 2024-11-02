@@ -22,6 +22,7 @@
 git clone https://github.com/MuskZhouPai/Email_Distribution.git
 cd Email_Distribution
 pip install -r requirements.txt
+```
 
 2. 在.env中设置登录信息
 
@@ -29,3 +30,4 @@ pip install -r requirements.txt
 
 ```bash
 python app.py
+```
