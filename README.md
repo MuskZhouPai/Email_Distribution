@@ -16,9 +16,16 @@
 
 ## 安装
 
-克隆此仓库并安装所需的依赖项：
+1. 克隆此仓库并安装所需的依赖项：
 
 ```bash
 git clone https://github.com/MuskZhouPai/Email_Distribution.git
 cd Email_Distribution
 pip install -r requirements.txt
+
+2. 在.env中设置登录信息
+
+3. 运行主程序
+
+```bash
+python app.py
