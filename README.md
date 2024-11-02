@@ -24,7 +24,7 @@ cd Email_Distribution
 pip install -r requirements.txt
 ```
 
-2. 在.env中设置登录信息
+2. 在app.py中修改相关信息
 3. 在/templates/index.html中设置邮箱域名
 
 4. 运行主程序
