@@ -13,20 +13,13 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)  # 用于保护会话
 
 # 配置数据库连接
-
-# 构建 SQLALCHEMY_DATABASE_URI
-db_username = os.getenv("DB_USERNAME")
-db_password = os.getenv("DB_PASSWORD")
-db_host = os.getenv("DB_HOST")
-db_name = os.getenv("DB_NAME")
-
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{db_username}:{db_password}@{db_host}/{db_name}"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://数据库用户名:数据库密码@localhost/数据库名'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# 配置 OAuth 相关信息
-client_id = os.getenv('OAUTH_CLIENT_ID')
-client_secret = os.getenv('OAUTH_CLIENT_SECRET')  # 从环境变量获取 Client Secret
+# 配置 OAuth 相关信息（正常填写）
+client_id = 
+client_secret =  
 token_url = 'https://connect.linux.do/oauth2/token'
 user_info_url = 'https://connect.linux.do/api/user'
 
@@ -129,9 +122,7 @@ def index():
         Email.created_at >= today
     ).count()
 
-    # 设定每日创建邮箱最大数量，默认为1
-
-max_daily_email_limit = int(os.getenv("MAX_DAILY_EMAIL_LIMIT"))
+    max_daily_email_limit = 6  # 每天最多创建 6 个邮箱
 
     if today_email_count >= max_daily_email_limit:
         flash(f'您今天已经创建了 {today_email_count} 个邮箱，达到每日创建上限 {max_daily_email_limit} 个。', 'warning')
@@ -150,11 +141,11 @@ max_daily_email_limit = int(os.getenv("MAX_DAILY_EMAIL_LIMIT"))
             flash('当前邮箱已存在，请选择其他邮箱名称。')
             return redirect(url_for('index'))
 
-account_info = {
-    "username": os.getenv("USERNAME"),
-    "password": os.getenv("PASSWORD"),
-    "panel": os.getenv("PANEL")
-}
+        account_info = {
+            "username": "serv00用户名",
+            "password": "serv00密码",
+            "panel": "serv00登陆地址"
+        }
 
         result = login_and_create_email(account_info, email_username, email_password, domain)
         if result["success"]:
